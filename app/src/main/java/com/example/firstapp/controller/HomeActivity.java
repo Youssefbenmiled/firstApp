@@ -1,4 +1,4 @@
-package com.example.firstapp;
+package com.example.firstapp.controller;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -12,6 +12,9 @@ import android.view.KeyEvent;
 import android.view.MenuItem;
 import android.widget.Toast;
 
+
+import com.example.firstapp.R;
+import com.example.firstapp.model.Produit;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -53,13 +56,13 @@ public class HomeActivity extends AppCompatActivity {
 
                         break;
                     case R.id.ItemPanier:
-                        Intent intent=new Intent(getApplicationContext(),PanierActivity.class);
+                        Intent intent=new Intent(getApplicationContext(), PanierActivity.class);
 
                         startActivity(intent);
                         overridePendingTransition(0,0);
                         break;
                     case R.id.ItemProduits:
-                        Intent intent2=new Intent(getApplicationContext(),ProductActivity.class);
+                        Intent intent2=new Intent(getApplicationContext(), ProductActivity.class);
                         //intent2.putExtra("BUNDLEUSER",sendUser(user));
                         startActivity(intent2);
                         overridePendingTransition(0,0);

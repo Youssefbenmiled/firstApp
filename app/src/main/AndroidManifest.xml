@@ -9,13 +9,13 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".SplashActivity"></activity>
-        <activity android:name=".ForgetActivity" />
-        <activity android:name=".InscrireActivity" />
-        <activity android:name=".ProductActivity" />
-        <activity android:name=".PanierActivity" />
-        <activity android:name=".HomeActivity" />
-        <activity android:name=".LoginActivity">
+        <activity android:name=".controller.SplashActivity"></activity>
+        <activity android:name=".controller.ForgetActivity" />
+        <activity android:name=".controller.InscrireActivity" />
+        <activity android:name=".controller.ProductActivity" />
+        <activity android:name=".controller.PanierActivity" />
+        <activity android:name=".controller.HomeActivity" />
+        <activity android:name=".controller.LoginActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

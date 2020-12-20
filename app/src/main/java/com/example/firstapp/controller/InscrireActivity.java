@@ -1,4 +1,4 @@
-package com.example.firstapp;
+package com.example.firstapp.controller;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -12,14 +12,14 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+
+import com.example.firstapp.R;
+import com.example.firstapp.model.*;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 
@@ -113,7 +113,7 @@ public class InscrireActivity extends AppCompatActivity {
                             btnConfirm.setEnabled(false);
                             final User user=new User(em,tel,new ArrayList<Produit>(),new ArrayList<Produit>());
                             final String ch=FirebaseAuth.getInstance().getCurrentUser().getUid();
-                            Constants.UID=ch;
+                            //Constants.UID=ch;
                             FirebaseDatabase.getInstance().getReference("Users")
                                     .child(ch)
                                     .setValue(user).addOnCompleteListener(new OnCompleteListener<Void>() {
