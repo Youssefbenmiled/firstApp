@@ -138,6 +138,7 @@ public class ProductActivity extends AppCompatActivity {
 
             switch (item.getItemId()) {
                 case R.id.ajout:
+                    startActivity(new Intent(getApplicationContext(),CameraActivity.class));
 
                     addProduct();
 

@@ -13,6 +13,7 @@
     <string name="welcome">Bienvenue utilisateur</string>
 
     <string name="Forget">Mot de passe oublié ?</string>
+    <string name="cam">Prendre une photo</string>
 
     <string-array name="programming_languages">
         <item>c++</item>

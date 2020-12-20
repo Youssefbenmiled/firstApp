@@ -4,7 +4,7 @@ import android.widget.ImageView;
 
 import java.io.Serializable;
 
-public class Produit implements Serializable {
+public class Produit{
     private String categorie;
     private String nomProduit;
     private ImageView img_produit;

@@ -16,7 +16,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.firstapp.R;
-import com.example.firstapp.model.*;
+import com.example.firstapp.model.User;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -27,8 +27,8 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Iterator;
+
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -122,10 +122,7 @@ public class LoginActivity extends AppCompatActivity {
             public void onComplete(@NonNull Task<AuthResult> task) {
                 if(task.isSuccessful())
                 {
-
-
                     redirectUser(email);
-
                 }
                 else
                 {
@@ -140,23 +137,20 @@ public class LoginActivity extends AppCompatActivity {
 
     }
 
-    private User redirectUser(final String email) {
-        final User[] us = {new User()};
+    private void redirectUser(final String email) {
 
 
         FirebaseDatabase.getInstance().getReference().child("Users").addListenerForSingleValueEvent(new ValueEventListener() {
 
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                Toast.makeText(getApplicationContext(),email,Toast.LENGTH_LONG).show();
-                //DataSnapshot dataSnapshotRes = snapshot.child("Users");
+
+
                 for(DataSnapshot objet:snapshot.getChildren()){
 
-                    //List<String> list = new ArrayList<String>(map.values());
-
-                    User user=(User)objet.getValue(User.class);
-                    Log.i("DATAneded",objet.getKey()+" "+user.getEmail()+" "+email);
-                    if(user.getEmail().equals(email)){
+                    //User user=objet.getValue(User.class);
+                    String em=objet.child("email").getValue(String.class);
+                    if(em.equals(email)){
 
                         SharedPreferences preferences = getSharedPreferences("SHARED_PREF", MODE_PRIVATE);
                         SharedPreferences.Editor editor = preferences.edit();
@@ -164,29 +158,21 @@ public class LoginActivity extends AppCompatActivity {
                         editor.apply();
                         Intent i=new Intent(getApplicationContext(),HomeActivity.class);
                         startActivity(i);
-
-                        us[0] =user;
-
                         return;
 
                     }
 
                 }
-                /*if(us[0]==null)
-                {
-                    Toast.makeText(getApplicationContext(),"Failed to Login.Verify your data please",Toast.LENGTH_LONG).show();
 
-                }*/
 
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-
+                Log.d("TAG", error.getMessage());
             }
         });
 
-        return us[0];
     }
 
     @Override
