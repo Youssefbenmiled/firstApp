@@ -80,17 +80,8 @@ public class HomeActivity extends AppCompatActivity {
     }
    
 
-
-
-
-
-
-
-
-
     public void getAllProducts(){
         FirebaseDatabase.getInstance().getReference().child("Users").addListenerForSingleValueEvent(new ValueEventListener() {
-
 
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -98,13 +89,7 @@ public class HomeActivity extends AppCompatActivity {
                     for(DataSnapshot prod:objet.child("produits").getChildren()){
                         Produit p=prod.getValue(Produit.class);
                         prods.add(new Produit(p.getCategorie(),p.getNomProduit(),p.getFournisseur()));
-
-
-
                     }
-
-
-
                 }
 
                 Adapter ADP=new Adapter(getApplicationContext(),prods,images);
