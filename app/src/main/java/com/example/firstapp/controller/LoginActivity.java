@@ -57,8 +57,7 @@ public class LoginActivity extends AppCompatActivity {
         String uid = preferences.getString("UID", null);
         if(uid!=null)
         {
-            Intent intent = new Intent(LoginActivity.this, HomeActivity.class);
-            startActivity(intent);
+            startActivity(new Intent(getApplicationContext(), HomeActivity.class));
         }
 
 
@@ -140,7 +139,7 @@ public class LoginActivity extends AppCompatActivity {
     private void redirectUser(final String email) {
 
 
-        FirebaseDatabase.getInstance().getReference().child("Users").addListenerForSingleValueEvent(new ValueEventListener() {
+        FirebaseDatabase.getInstance().getReference("Users").addListenerForSingleValueEvent(new ValueEventListener() {
 
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {

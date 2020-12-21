@@ -140,7 +140,7 @@ public class ProductActivity extends AppCompatActivity {
                 case R.id.ajout:
                     startActivity(new Intent(getApplicationContext(),CameraActivity.class));
 
-                    addProduct();
+                    //addProduct();
 
 
                     break;
@@ -183,7 +183,7 @@ public class ProductActivity extends AppCompatActivity {
                     .addOnCompleteListener(new OnCompleteListener<Void>() {
                         @Override
                         public void onComplete(@NonNull Task<Void> task) {
-                            Toast.makeText(getApplicationContext(), "Product added !", Toast.LENGTH_LONG).show();
+                            //Toast.makeText(getApplicationContext(), "Product added !", Toast.LENGTH_LONG).show();
 
                         }
                     });
