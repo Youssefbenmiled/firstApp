@@ -138,9 +138,15 @@ public class ProductActivity extends AppCompatActivity {
 
             switch (item.getItemId()) {
                 case R.id.ajout:
-                    startActivity(new Intent(getApplicationContext(),CameraActivity.class));
+                    SharedPreferences preferences = getSharedPreferences("SHARED_PREF", MODE_PRIVATE);
+                    String uid = preferences.getString("UID", "NOTHING");
+                    FirebaseDatabase database = FirebaseDatabase.getInstance();
+                    String key = database.getReference("Users").child(uid).child("produits").push().getKey();
 
-                    //addProduct();
+                    addProduct(key,uid);
+
+                    startActivity(new Intent(getApplicationContext(),CameraActivity.class).putExtra("key",key));
+
 
 
                     break;
@@ -168,12 +174,9 @@ public class ProductActivity extends AppCompatActivity {
             finish();
         }
 
-        private void addProduct () {
-            SharedPreferences preferences = getSharedPreferences("SHARED_PREF", MODE_PRIVATE);
-            String uid = preferences.getString("UID", "NOTHING");
+        private void addProduct (String key,String uid) {
 
-            FirebaseDatabase database = FirebaseDatabase.getInstance();
-            String key = database.getReference("Users").child(uid).child("produits").push().getKey();
+
 
             FirebaseDatabase.getInstance().getReference("Users")
                     .child(uid)
