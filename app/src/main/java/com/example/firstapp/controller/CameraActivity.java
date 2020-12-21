@@ -5,6 +5,8 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+
+import android.view.WindowManager;
 import android.widget.Toast;
 
 import android.Manifest;
@@ -34,9 +36,12 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
+import java.io.ByteArrayOutputStream;
+
 public class CameraActivity extends AppCompatActivity {
-    ImageView iv_cam;
-    Button btn_camera;
+    private ImageView iv_cam;
+    private Button btn_camera;
+    private Bitmap captureImage;
     private StorageReference mStorageRef;
     private Uri ImageUri;
 
@@ -70,17 +75,28 @@ public class CameraActivity extends AppCompatActivity {
     }
 
     private void uploadFile() {
+        //getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+        ByteArrayOutputStream stream=new ByteArrayOutputStream();
+
+        captureImage.compress(Bitmap.CompressFormat.JPEG,100,stream);
+
+
         Intent intent=getIntent();
         String key=intent.getStringExtra("key");
 
         StorageReference riversRef = mStorageRef.child("images/"+key);
+        byte []b=stream.toByteArray();
 
-        riversRef.putFile(ImageUri)
+        riversRef.putBytes(b)
                 .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                     @Override
                     public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                        //getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
 
-                        Snackbar.make(findViewById(android.R.id.content),"Image uploaded",Snackbar.LENGTH_LONG).show();
+
+                        Toast.makeText(getApplicationContext(),"onSuccess",Toast.LENGTH_LONG).show();
+
+
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {
@@ -90,30 +106,29 @@ public class CameraActivity extends AppCompatActivity {
 
                     }
                 });
+
+
     }
 
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         if(requestCode==100 ){
-            if(data.getExtras()!=null) {
+            //if(data.getData()!=null) {
                 btn_camera.setVisibility(View.VISIBLE);
                 SharedPreferences preferences = getSharedPreferences("SHARED_PREF", MODE_PRIVATE);
                 String uid = preferences.getString("UID", "NOTHING");
-                Bitmap captureImage = (Bitmap) data.getExtras().get("data");
+                captureImage = (Bitmap) data.getExtras().get("data");
                 iv_cam.setImageBitmap(captureImage);
 
 
-
-                ImageUri = data.getData();
-
-
-
-            }
+            /*}
             else
             {
+                Toast.makeText(getApplicationContext(),"HANI FEL ELSE",Toast.LENGTH_LONG).show();
+
                 startActivity(new Intent(getApplicationContext(),ProductActivity.class));
-            }
+            }*/
 
         }
     }
