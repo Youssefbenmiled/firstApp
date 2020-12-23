@@ -33,8 +33,6 @@ import java.util.ArrayList;
 
 public class ProductActivity extends AppCompatActivity {
 
-
-
     RecyclerView recyclerView;
     Toolbar toolbar;
     int images[]={R.drawable.ic_home,R.drawable.cplus};
@@ -46,14 +44,13 @@ public class ProductActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
-
-
             super.onCreate(savedInstanceState);
             setContentView(R.layout.activity_product);
 
             recyclerView = findViewById(R.id.rv_Products);
             toolbar = findViewById(R.id.toolb);
             tv_prd=findViewById(R.id.tv_null);
+
             setSupportActionBar(toolbar);
             getSupportActionBar().setDisplayShowTitleEnabled(false);
 
@@ -90,12 +87,15 @@ public class ProductActivity extends AppCompatActivity {
             });
 
             getProducts();
+            getImages();
 
 
         }
 
 
-        @Override
+
+
+    @Override
         public boolean onKeyDown ( int keyCode, KeyEvent event){
             if (keyCode == KeyEvent.KEYCODE_BACK && event.getRepeatCount() == 0) {
 
@@ -123,10 +123,7 @@ public class ProductActivity extends AppCompatActivity {
         public boolean onCreateOptionsMenu (Menu menu){
 
             getMenuInflater().inflate(R.menu.menu, menu);
-
             menu.getItem(1).setEnabled(false);
-
-
             menu.getItem(2).setEnabled(false);
 
 
@@ -142,12 +139,9 @@ public class ProductActivity extends AppCompatActivity {
                     String uid = preferences.getString("UID", "NOTHING");
                     FirebaseDatabase database = FirebaseDatabase.getInstance();
                     String key = database.getReference("Users").child(uid).child("produits").push().getKey();
-
                     addProduct(key,uid);
 
                     startActivity(new Intent(getApplicationContext(),CameraActivity.class).putExtra("key",key));
-
-
 
                     break;
                 case R.id.update:
@@ -182,7 +176,7 @@ public class ProductActivity extends AppCompatActivity {
                     .child(uid)
                     .child("produits")
                     .child(key)
-                    .setValue(new Produit("C", "NP", "F"))
+                    .setValue(new Produit("C", "NP", "F",true))
                     .addOnCompleteListener(new OnCompleteListener<Void>() {
                         @Override
                         public void onComplete(@NonNull Task<Void> task) {
@@ -204,14 +198,14 @@ public class ProductActivity extends AppCompatActivity {
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 for(DataSnapshot objet:snapshot.getChildren()){
                         Produit p=objet.getValue(Produit.class);
-                        prods.add(new Produit(p.getCategorie(),p.getNomProduit(),p.getFournisseur()));
+                        prods.add(p);
                 }
 
 
 
-                Adapter ADP=new Adapter(getApplicationContext(),prods,images);
-                recyclerView.setAdapter(ADP);
-                recyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
+                //Adapter ADP=new Adapter(getApplicationContext(),prods,images);
+                //recyclerView.setAdapter(ADP);
+                //recyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
                 if(prods.size()==0){
                     tv_prd.setText("Aucun produit à votre disposition");
                 }
@@ -226,6 +220,9 @@ public class ProductActivity extends AppCompatActivity {
         });
 
 
+    }
+
+    private void getImages() {
     }
 
 

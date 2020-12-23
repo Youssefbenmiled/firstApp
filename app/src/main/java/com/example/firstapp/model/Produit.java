@@ -3,34 +3,49 @@ package com.example.firstapp.model;
 import android.widget.ImageView;
 
 import java.io.Serializable;
+import java.util.Calendar;
+import java.util.Date;
 
 public class Produit{
     private String categorie;
     private String nomProduit;
-    private ImageView img_produit;
     private String fournisseur;
-    //private int nbPanier;
+    private int nbPanier;
+    private Date currentTime;
+    private Boolean disponible;
 
 
-    public Produit(String categorie, String nomProduit,String fournisseur) {
+    public Produit(String categorie, String nomProduit,String fournisseur,Boolean disponible) {
         this.categorie = categorie;
         this.nomProduit = nomProduit;
-        //this.nbPanier=0;
-        //this.img_produit = img_produit;
+        this.nbPanier=0;
         this.fournisseur = fournisseur;
+        this.disponible=disponible;
+        this.currentTime = null;
+
+        //this.currentTime = Calendar.getInstance().getTime();
+
     }
     public Produit(){
 
     }
 
-   /*public int getNbPanier() {
+    public Boolean getDisponible() {
+        return disponible;
+    }
+
+    public void setDisponible(Boolean disponible) {
+        this.disponible = disponible;
+    }
+
+    public int getNbPanier() {
         return nbPanier;
     }
 
     public void setNbPanier(int nbPanier) {
         this.nbPanier = nbPanier;
     }
-*/
+
     public String getCategorie() {
         return categorie;
     }
@@ -51,13 +66,6 @@ public class Produit{
 
 
 
-   /* public ImageView getImg_produit() {
-        return img_produit;
-    }
-
-    public void setImg_produit(ImageView img_produit) {
-        this.img_produit = img_produit;
-    }*/
 
     public String getFournisseur() {
         return fournisseur;
@@ -66,17 +74,12 @@ public class Produit{
     public void setFournisseur(String fournisseur) {
         this.fournisseur = fournisseur;
     }
-/*
-    public void plusPanier()
-    {
-         this.nbPanier++;
+
+    public Date getCurrentTime() {
+        return currentTime;
     }
 
-    public void moinsPanier()
-    {
-        if(this.nbPanier>0)
-         this.nbPanier--;
-
-
-    }*/
+    public void setCurrentTime(Date currentTime) {
+        this.currentTime = currentTime;
+    }
 }

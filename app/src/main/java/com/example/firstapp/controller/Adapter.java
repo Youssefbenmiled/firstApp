@@ -1,7 +1,8 @@
 package com.example.firstapp.controller;
-
+import com.bumptech.glide.Glide;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -25,6 +26,8 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.UploadTask;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
@@ -33,17 +36,14 @@ import static android.content.Context.MODE_PRIVATE;
 public class Adapter extends RecyclerView.Adapter<Adapter.MyViewHolder> {
 
     Context context;
-    ArrayList<Produit> produits;
-    ArrayList<Produit> prods=new ArrayList<>();
+    ArrayList<Upload> images;
 
-    int images[];
+    //int images[];
 
-    public Adapter(Context context, ArrayList<Produit> data1, int imgs[]){
+    public Adapter(Context context, ArrayList<Upload> data){
         this.context=context;
-        this.produits=data1;
+        this.images=data;
 
-        this.prods=new ArrayList<>();
-        this.images=imgs;
 
     }
 
@@ -61,26 +61,42 @@ public class Adapter extends RecyclerView.Adapter<Adapter.MyViewHolder> {
     public void onBindViewHolder(@NonNull final Adapter.MyViewHolder holder, int position) {
 
 
-        final Produit unproduit=produits.get(position);
-        //holder.iv.setImageResource(images[0]);
+        final Upload image=images.get(position);
+        Log.i("ADAPTERURL",image.getImgUrl());
+        /*Glide.with(context)
+                //.load("gs://store-305a6.appspot.com/images/-MPA1TWro4K9wOtBWHnR.jpg")
+                .load("https://firebasestorage.googleapis.com/v0/b/store-305a6.appspot.com/o/images%2F-MPB_avsg3PK9dgztEez.jpg?alt=media&token=6171b969-6693-4eda-b633-f2eb7f555af9")
+                .load(image.getImgUrl())
+                .into(holder.iv);*/
+        Picasso.get()
+                .load(image.getImgUrl())
+                .placeholder(R.drawable.ic_launcher_background)
+                .fit()
+                .centerCrop()
+                .into(holder.iv);
+
+
+        //holder.iv.setImageBitmap(unproduit);
         //holder.VerifyProducts(context);
-        holder.categorie.setText(unproduit.getCategorie());
-        holder.nom.setText(unproduit.getNomProduit());
-        holder.fournisseur.setText(unproduit.getFournisseur());
+        //holder.categorie.setText(unproduit.getCategorie());
+        //holder.nom.setText(unproduit.getNomProduit());
+        //holder.fournisseur.setText(unproduit.getFournisseur());
         //holder.nbpanier.setText(String.valueOf(unproduit.getNbPanier()));
-        holder.btnLike.setOnClickListener(new View.OnClickListener() {
+
+        /*holder.btnLike.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                addProductToPanier(context,unproduit);
+                //addProductToPanier(context,unproduit);
 
             }
-        });
+        });*/
 
 
         holder.itemView.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View v) {
+
                 //Intent intent=new Intent(ct,PanierActivity.class);
                 //intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 //ct.startActivity(intent);
@@ -92,65 +108,35 @@ public class Adapter extends RecyclerView.Adapter<Adapter.MyViewHolder> {
 
     @Override
     public int getItemCount() {
-        return produits.size();
+        return images.size();
     }
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
-        TextView categorie,nom,nbpanier,fournisseur;
+        //TextView categorie,nom,nbpanier,fournisseur;
         ImageView iv;
-        Button btnLike;
+        //Button btnLike;
 
 
         public MyViewHolder(@NonNull View itemView) {
             super(itemView);
-            categorie=itemView.findViewById(R.id.cat);
-            nom=itemView.findViewById(R.id.nomProduit);
+            //categorie=itemView.findViewById(R.id.cat);
+            //nom=itemView.findViewById(R.id.nomProduit);
             //nbpanier=itemView.findViewById(R.id.nb);
-            fournisseur=itemView.findViewById(R.id.frn);
-            btnLike=itemView.findViewById(R.id.likeBtn);
+            //fournisseur=itemView.findViewById(R.id.frn);
+            //btnLike=itemView.findViewById(R.id.likeBtn);
 
             iv=itemView.findViewById(R.id.imgview);
-            iv.getLayoutParams().height = 250;
+
+            /*iv.getLayoutParams().height = 250;
             iv.getLayoutParams().width = 250;
-            iv.requestLayout();
+            iv.requestLayout();*/
 
 
-            //btnLike.setVisibility(View.GONE);
 
 
 
         }
-        /*public void VerifyProducts(Context context) {
-            SharedPreferences preferences= context.getSharedPreferences("SHARED_PREF", MODE_PRIVATE);
-            final String uid = preferences.getString("UID", null);
 
-            FirebaseDatabase.getInstance().getReference().child("Users").addListenerForSingleValueEvent(new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull DataSnapshot snapshot) {
-                    for (DataSnapshot objet : snapshot.getChildren()) {
-                        if(objet.getKey().equals(uid)){
-                            btnLike.setVisibility(View.GONE);
-
-                        }
-
-                    }
-
-
-
-
-
-                }
-
-                @Override
-                public void onCancelled(@NonNull DatabaseError error) {
-
-                }
-            });
-
-
-        }
-
-*/
 
     }
 

@@ -19,7 +19,6 @@ public class User {
     public User(String email, String tel, ArrayList<Produit> prodList, ArrayList<Produit> panierList) {
         this.email=email;
         this.Tel = tel;
-
         this.ProdList = prodList;
         this.PanierList = panierList;
 
