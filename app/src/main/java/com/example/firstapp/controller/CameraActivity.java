@@ -92,8 +92,7 @@ public class CameraActivity extends AppCompatActivity {
 
             Intent intent=getIntent();
             final String key=intent.getStringExtra("key");
-            final String[] url = {""};
-            //StorageReference fileRef=mStorageRef.child(key+"."+getFileExtension(ImageUri));
+
 
 
             mStorageRef.child(key+"."+getFileExtension(ImageUri))
@@ -104,8 +103,8 @@ public class CameraActivity extends AppCompatActivity {
                     taskSnapshot.getMetadata().getReference().getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                         @Override
                         public void onSuccess(Uri uri) {
-                            url[0] =uri.toString();
-                            Upload upload=new Upload(url[0]);
+
+                            Upload upload=new Upload(uri.toString());
                             mDatabaseRef.child(key).setValue(upload);
 
                         }
