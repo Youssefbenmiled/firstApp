@@ -105,6 +105,7 @@ public class CameraActivity extends AppCompatActivity {
                         public void onSuccess(Uri uri) {
 
                             Upload upload=new Upload(uri.toString());
+                            ;
                             mDatabaseRef.child(key).setValue(upload);
 
                         }
