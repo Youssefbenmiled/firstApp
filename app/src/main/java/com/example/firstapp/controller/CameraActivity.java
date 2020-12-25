@@ -28,6 +28,7 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.example.firstapp.R;
+import com.example.firstapp.model.Produit;
 import com.example.firstapp.model.Upload;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -43,6 +44,11 @@ import com.google.firebase.storage.UploadTask;
 import com.squareup.picasso.Picasso;
 
 import java.io.ByteArrayOutputStream;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.Locale;
 
 public class CameraActivity extends AppCompatActivity {
     private ImageView iv_cam;
@@ -50,6 +56,7 @@ public class CameraActivity extends AppCompatActivity {
     private StorageReference mStorageRef;
     private DatabaseReference mDatabaseRef;
     private Uri ImageUri;
+    private Produit produit;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,7 +68,15 @@ public class CameraActivity extends AppCompatActivity {
         mStorageRef = FirebaseStorage.getInstance().getReference();
         mDatabaseRef = FirebaseDatabase.getInstance().getReference().child("images");
 
-        if(ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.CAMERA)!= PackageManager.PERMISSION_GRANTED){
+        Intent intent = getIntent();
+        if(intent.getBundleExtra("BUNDLE")!=null) {
+            Bundle args = intent.getBundleExtra("BUNDLE");
+
+            produit = (Produit) args.getSerializable("PRODUIT");
+        }
+
+
+            if(ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.CAMERA)!= PackageManager.PERMISSION_GRANTED){
             ActivityCompat.requestPermissions(CameraActivity.this,new String[]{
                     Manifest.permission.CAMERA
             },100);
@@ -73,11 +88,38 @@ public class CameraActivity extends AppCompatActivity {
         btn_camera.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //uploadFile();
-                uploadFile();
+                SharedPreferences preferences = getSharedPreferences("SHARED_PREF", MODE_PRIVATE);
+                String uid = preferences.getString("UID", "NOTHING");
+                FirebaseDatabase database = FirebaseDatabase.getInstance();
+                String key = database.getReference("Users").child(uid).child("produits").push().getKey();
+
+                uploadFile(key,uid);
+                addProduct(key,uid,produit);
+                startActivity(new Intent(getApplicationContext(),HomeActivity.class));
+                finishAffinity();
+
 
             }
         });
+
+    }
+
+
+
+
+    private void addProduct(String key,String uid,Produit produit) {
+        FirebaseDatabase.getInstance().getReference("Users")
+                .child(uid)
+                .child("produits")
+                .child(key)
+                .setValue(produit)
+                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+
+                    }
+                });
+
 
     }
 
@@ -87,13 +129,8 @@ public class CameraActivity extends AppCompatActivity {
         return mime.getExtensionFromMimeType(CR.getType(uri));
     }
 
-    private void uploadFile() {
+    private void uploadFile(final String key, final String uid) {
         if(ImageUri!=null){
-
-            Intent intent=getIntent();
-            final String key=intent.getStringExtra("key");
-
-
 
             mStorageRef.child(key+"."+getFileExtension(ImageUri))
                     .putFile(ImageUri)
@@ -105,18 +142,13 @@ public class CameraActivity extends AppCompatActivity {
                         public void onSuccess(Uri uri) {
 
                             Upload upload=new Upload(uri.toString());
-                            ;
-                            mDatabaseRef.child(key).setValue(upload);
+
+                            mDatabaseRef.child(uid).child(key).setValue(upload);
+                            Toast.makeText(getApplicationContext(), "Produit ajouté!", Toast.LENGTH_LONG).show();
+
 
                         }
                     });
-
-
-
-                        Toast.makeText(getApplicationContext(),"HANI DKHALET",Toast.LENGTH_LONG).show();
-
-
-
                     //Toast.makeText(getApplicationContext(),"Image ajoutée",Toast.LENGTH_LONG).show();
                     //mProgressBar.setProgress(0);
 
@@ -141,6 +173,7 @@ public class CameraActivity extends AppCompatActivity {
         {
             Toast.makeText(getApplicationContext(),"No file selected !",Toast.LENGTH_LONG).show();
         }
+
 
     }
 
@@ -191,21 +224,31 @@ public class CameraActivity extends AppCompatActivity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        if(requestCode==100 && data.getData()!=null){
 
+        if (requestCode == 100) {
+
+
+            if (data!= null) {
+
+                ImageUri = data.getData();
+                iv_cam.setImageURI(ImageUri);
                 //btn_camera.setVisibility(View.VISIBLE);
                 //SharedPreferences preferences = getSharedPreferences("SHARED_PREF", MODE_PRIVATE);
                 //String uid = preferences.getString("UID", "NOTHING");
 
-                ImageUri=data.getData();
-                iv_cam.setImageURI(ImageUri);
+
                 //Picasso.get().load(ImageUri).into(iv_cam);
 
                 //captureImage = (Bitmap) data.getExtras().get("data");
                 //iv_cam.setImageBitmap(captureImage);
 
 
-
+            }
+            else
+            {
+                startActivity(new Intent(getApplicationContext(),AddProductActivity.class));
+                finishAffinity();
+            }
 
         }
     }

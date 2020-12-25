@@ -3,31 +3,58 @@ package com.example.firstapp.model;
 import android.widget.ImageView;
 
 import java.io.Serializable;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Locale;
 
-public class Produit{
-    private String categorie;
-    private String nomProduit;
+public class Produit implements Serializable {
+
+
     private String fournisseur;
     private int nbPanier;
-    private Date currentTime;
+    private String currentTime;
     private Boolean disponible;
+    private String dateDisponibilite;
 
 
-    public Produit(String categorie, String nomProduit,String fournisseur,Boolean disponible) {
-        this.categorie = categorie;
-        this.nomProduit = nomProduit;
-        this.nbPanier=0;
-        this.fournisseur = fournisseur;
+    public Produit(String adresse,Boolean disponible,String datdispo) {
+
+        this.fournisseur = adresse;
         this.disponible=disponible;
-        this.currentTime = null;
+        if(disponible)
+        {
+            //String currentDate = new SimpleDateFormat("dd-MM-yyyy hh:mm:ss", Locale.getDefault()).format(new Date());
+
+            this.currentTime = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss", Locale.getDefault()).format(new Date());
+            this.dateDisponibilite=null;
+
+
+        }
+        else
+        {
+            this.currentTime = null;
+            this.dateDisponibilite=datdispo;
+
+
+        }
+        this.nbPanier=0;
+
 
         //this.currentTime = Calendar.getInstance().getTime();
 
     }
     public Produit(){
 
+    }
+
+    public String getDateDisponibilite() {
+        return dateDisponibilite;
+    }
+
+    public void setDateDisponibilite(String dateDisponibilite) {
+        this.dateDisponibilite = dateDisponibilite;
     }
 
     public Boolean getDisponible() {
@@ -46,7 +73,7 @@ public class Produit{
         this.nbPanier = nbPanier;
     }
 
-    public String getCategorie() {
+    /*public String getCategorie() {
         return categorie;
     }
 
@@ -64,7 +91,7 @@ public class Produit{
 
 
 
-
+*/
 
 
     public String getFournisseur() {
@@ -75,11 +102,14 @@ public class Produit{
         this.fournisseur = fournisseur;
     }
 
-    public Date getCurrentTime() {
+
+    public String getCurrentTime() {
         return currentTime;
     }
 
-    public void setCurrentTime(Date currentTime) {
+    public void setCurrentTime(String currentTime) {
         this.currentTime = currentTime;
     }
+
+
 }

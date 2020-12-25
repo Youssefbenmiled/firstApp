@@ -1,8 +1,10 @@
 package com.example.firstapp.controller;
 import com.bumptech.glide.Glide;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
+import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -24,11 +26,13 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.UploadTask;
 import com.squareup.picasso.Picasso;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
 import static android.content.Context.MODE_PRIVATE;
@@ -37,13 +41,21 @@ public class Adapter extends RecyclerView.Adapter<Adapter.MyViewHolder> {
 
     Context context;
     ArrayList<Upload> images;
+    String key;
+    DatabaseReference mDatabaseRef;
 
     //int images[];
 
     public Adapter(Context context, ArrayList<Upload> data){
         this.context=context;
         this.images=data;
+    }
 
+    public Adapter(Context context, ArrayList<Upload> data,String key){
+        this.context=context;
+        this.images=data;
+        this.key=key;
+        mDatabaseRef = FirebaseDatabase.getInstance().getReference().child("Users");
 
     }
 
@@ -62,7 +74,7 @@ public class Adapter extends RecyclerView.Adapter<Adapter.MyViewHolder> {
 
 
         final Upload image=images.get(position);
-        Log.i("ADAPTERURL",image.getImgUrl());
+        //Log.i("ADAPTERURL",image.getImgUrl());
         /*Glide.with(context)
                 //.load("gs://store-305a6.appspot.com/images/-MPA1TWro4K9wOtBWHnR.jpg")
                 .load("https://firebasestorage.googleapis.com/v0/b/store-305a6.appspot.com/o/images%2F-MPB_avsg3PK9dgztEez.jpg?alt=media&token=6171b969-6693-4eda-b633-f2eb7f555af9")
@@ -97,13 +109,53 @@ public class Adapter extends RecyclerView.Adapter<Adapter.MyViewHolder> {
             @Override
             public void onClick(View v) {
 
-                //Intent intent=new Intent(ct,PanierActivity.class);
-                //intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                //ct.startActivity(intent);
+                /*Intent intent=new Intent(context,DetailsActivity.class);
+                Bundle args = new Bundle();
+                args.putSerializable("PRODUIT",(Serializable)getProduit());
+                intent.putExtra("BUNDLE",args);
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                context.startActivity(intent);*/
+                getProduit();
+
+
 
 
             }
         });
+    }
+
+    private void getProduit() {
+        mDatabaseRef.addListenerForSingleValueEvent(new ValueEventListener() {
+
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+
+
+                for(DataSnapshot objet:snapshot.getChildren()){
+
+                    for(DataSnapshot snap:objet.child("produits").getChildren()){
+                        if(snap.getKey().equals(key)){
+                            Log.d("id",snap.getValue().toString());
+                        }
+
+
+
+                    }
+
+
+
+
+                }
+
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Log.d("TAG", error.getMessage());
+            }
+        });
+
     }
 
     @Override

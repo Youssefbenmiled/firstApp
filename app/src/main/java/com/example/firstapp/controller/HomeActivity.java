@@ -6,6 +6,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
@@ -36,6 +37,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collections;
 
 public class HomeActivity extends AppCompatActivity {
 
@@ -54,15 +56,64 @@ public class HomeActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
         recyclerView=(RecyclerView)findViewById(R.id.recview);
-        //iv=findViewById(R.id.iv_try);
+
         imgLists=new ArrayList<>();
         mDatabaseRef=FirebaseDatabase.getInstance().getReference("images");
 
-        //getAllProducts();
+        //SharedPreferences preferences = getSharedPreferences("SHARED_PREF", MODE_PRIVATE);
+        //String uid = preferences.getString("UID", "NOTHING");
         getImages();
 
 
     }
+
+    private void getImages() {
+        final String[] key = new String[1];
+        mDatabaseRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+
+                for(DataSnapshot snap:snapshot.getChildren()){
+                    for(DataSnapshot snapIN:snap.getChildren()){
+                        key[0] =snapIN.getKey();
+                        Upload upload=snap.child(key[0]).getValue(Upload.class);
+                        imgLists.add(upload);
+
+
+                    }
+
+
+
+                }
+
+
+                Adapter ADP=new Adapter(getApplicationContext(),imgLists,key[0]);
+                recyclerView.setAdapter(ADP);
+                recyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Toast.makeText(getApplicationContext(),error.getMessage(),Toast.LENGTH_LONG).show();
+            }
+        });
+
+    }
+
+
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event)  {
+        if (keyCode == KeyEvent.KEYCODE_BACK && event.getRepeatCount() == 0) {
+
+            finishAffinity();
+            return true;
+        }
+
+        return super.onKeyDown(keyCode, event);
+    }
+
+
 
     @Override
     protected void onStart() {
@@ -84,7 +135,6 @@ public class HomeActivity extends AppCompatActivity {
                         break;
                     case R.id.ItemProduits:
                         Intent intent2=new Intent(getApplicationContext(), ProductActivity.class);
-                        //intent2.putExtra("BUNDLEUSER",sendUser(user));
                         startActivity(intent2);
                         overridePendingTransition(0,0);
                         break;
@@ -96,92 +146,4 @@ public class HomeActivity extends AppCompatActivity {
         });
 
     }
-
-    private void getImages() {
-        mDatabaseRef.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-
-                for(DataSnapshot snap:snapshot.getChildren()){
-                    Upload upload=snap.getValue(Upload.class);
-                    imgLists.add(upload);
-                    //Toast.makeText(getApplicationContext(),upload.getImgUrl(),Toast.LENGTH_LONG).show();
-                    Log.d("snaps",snap.toString());
-                }
-
-                Adapter ADP=new Adapter(getApplicationContext(),imgLists);
-                recyclerView.setAdapter(ADP);
-                recyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-                Toast.makeText(getApplicationContext(),error.getMessage(),Toast.LENGTH_LONG).show();
-            }
-        });
-
-
-
-        /*mDatabaseRef.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                for(DataSnapshot snap:snapshot.getChildren()){
-                    UploadTask upload=snap.getValue(UploadTask.class);
-                    imgLists.add(upload);
-
-                }
-                Adapter ADP=new Adapter(getApplicationContext(),imgLists);
-                recyclerView.setAdapter(ADP);
-                recyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
-        });*/
-    }
-
-
-    public void getAllProducts(){
-        /*mDatabaseRef.child("Users").addListenerForSingleValueEvent(new ValueEventListener() {
-
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                for(DataSnapshot objet:snapshot.getChildren()){
-                    for(DataSnapshot prod:objet.child("produits").getChildren()){
-                        Produit p=prod.getValue(Produit.class);
-                        //prods.add(p);
-                    }
-                }
-
-                /*Adapter ADP=new Adapter(getApplicationContext(),prods,images);
-                recyclerView.setAdapter(ADP);
-                recyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
-
-            }
-/*
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
-        });
-*/
-
-    }
-
-    @Override
-    public boolean onKeyDown(int keyCode, KeyEvent event)  {
-        if (keyCode == KeyEvent.KEYCODE_BACK && event.getRepeatCount() == 0) {
-
-            finishAffinity();
-            return true;
-        }
-
-        return super.onKeyDown(keyCode, event);
-    }
-
-
-
-
 }

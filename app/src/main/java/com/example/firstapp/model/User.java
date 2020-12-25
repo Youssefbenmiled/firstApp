@@ -5,9 +5,9 @@ import java.util.ArrayList;
 import com.example.firstapp.model.Produit;
 
 public class User {
-    String Tel,email;
-    ArrayList<Produit> ProdList=new ArrayList<>();
-    ArrayList<Produit> PanierList=new ArrayList<>();
+    private String tel,email,username;
+    private ArrayList<Produit> ProdList=new ArrayList<>();
+    private ArrayList<Produit> PanierList=new ArrayList<>();
 
 
     public User(){
@@ -16,13 +16,22 @@ public class User {
 
 
 
-    public User(String email, String tel, ArrayList<Produit> prodList, ArrayList<Produit> panierList) {
+    public User(String username,String email, String tel, ArrayList<Produit> prodList, ArrayList<Produit> panierList) {
+        this.username=username;
         this.email=email;
-        this.Tel = tel;
+        this.tel = tel;
         this.ProdList = prodList;
         this.PanierList = panierList;
 
 
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
     }
 
     public String getEmail() {
@@ -38,11 +47,11 @@ public class User {
 
 
     public String getTel() {
-        return Tel;
+        return tel;
     }
 
     public void setTel(String tel) {
-        Tel = tel;
+        tel = tel;
     }
 
     public ArrayList<Produit> getProdList() {
