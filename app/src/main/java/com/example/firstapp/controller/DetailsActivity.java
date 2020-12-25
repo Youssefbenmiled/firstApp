@@ -8,9 +8,12 @@ import android.widget.Toast;
 
 import com.example.firstapp.R;
 import com.example.firstapp.model.Produit;
+import com.example.firstapp.model.Upload;
 
 public class DetailsActivity extends AppCompatActivity {
-private Produit p;
+    private Produit produit;
+    private Upload upload;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -19,8 +22,10 @@ private Produit p;
         if(intent.getBundleExtra("BUNDLE")!=null) {
             Bundle args = intent.getBundleExtra("BUNDLE");
 
-             p = (Produit) args.getSerializable("PRODUIT");
-            Toast.makeText(getApplicationContext(),p.getCurrentTime(),Toast.LENGTH_LONG).show();
+            produit = (Produit) args.getSerializable("PRODUIT");
+            upload = (Upload) args.getSerializable("IMAGE");
+
+            Toast.makeText(getApplicationContext(),produit.getFournisseur(),Toast.LENGTH_LONG).show();
 
         }
     }

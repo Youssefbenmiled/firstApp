@@ -42,15 +42,31 @@ public class Adapter extends RecyclerView.Adapter<Adapter.MyViewHolder> {
     Context context;
     ArrayList<Upload> images;
     DatabaseReference mDatabaseRef;
+    String from;
 
-    //int images[];
 
-    public Adapter(Context context, ArrayList<Upload> data){
+
+    public Adapter(Context context, ArrayList<Upload> data,String from){
+
         this.context=context;
         this.images=data;
-        mDatabaseRef = FirebaseDatabase.getInstance().getReference().child("Users");
+        SharedPreferences preferences= context.getSharedPreferences("SHARED_PREF", MODE_PRIVATE);
+        String uid = preferences.getString("UID", null);
+        this.from=from;
+
+        if(from.equals("home"))
+            mDatabaseRef = FirebaseDatabase.getInstance().getReference().child("Users");
+
+        if(from.equals("produit"))
+        {
+            mDatabaseRef = FirebaseDatabase.getInstance().getReference().child("Users").child(uid);
+
+        }
+
 
     }
+
+
 
     @NonNull
     @Override
@@ -65,7 +81,7 @@ public class Adapter extends RecyclerView.Adapter<Adapter.MyViewHolder> {
 
 
         final Upload image=images.get(position);
-        //Log.i("ADAPTERURL",image.getImgUrl());
+
         /*Glide.with(context)
                 //.load("gs://store-305a6.appspot.com/images/-MPA1TWro4K9wOtBWHnR.jpg")
                 .load("https://firebasestorage.googleapis.com/v0/b/store-305a6.appspot.com/o/images%2F-MPB_avsg3PK9dgztEez.jpg?alt=media&token=6171b969-6693-4eda-b633-f2eb7f555af9")
@@ -101,46 +117,20 @@ public class Adapter extends RecyclerView.Adapter<Adapter.MyViewHolder> {
 
             @Override
             public void onClick(View v) {
+                if(from.equals("home")){
+                    getPHome(image.getKey(),image);
 
-                getProduit(image.getKey());
+                }
+                else if(from.equals("produit"))
+                {
+                    getPproduit(image.getKey(),image);
 
-            }
-        });
-    }
-
-    private void getProduit(final String key) {
-        mDatabaseRef.addListenerForSingleValueEvent(new ValueEventListener() {
-
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-
-
-                for(DataSnapshot objet:snapshot.getChildren()){
-
-                    for(DataSnapshot snap:objet.child("produits").getChildren()){
-                        if(snap.getKey().equals(key)){
-                            //Log.d("last",snap.getValue()+" lasttt");
-                            Intent intent=new Intent(context,DetailsActivity.class);
-                            Bundle args = new Bundle();
-                            args.putSerializable("PRODUIT",(Serializable)snap.getValue(Produit.class));
-                            intent.putExtra("BUNDLE",args);
-                            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                            context.startActivity(intent);
-                        }
-
-                    }
                 }
 
 
             }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-                Log.d("TAG", error.getMessage());
-            }
         });
     }
-
     @Override
     public int getItemCount() {
         return images.size();
@@ -174,6 +164,70 @@ public class Adapter extends RecyclerView.Adapter<Adapter.MyViewHolder> {
 
 
     }
+
+    private void getPproduit(final String key, final Upload image) {
+        mDatabaseRef.addListenerForSingleValueEvent(new ValueEventListener() {
+
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+
+
+                for (DataSnapshot objet : snapshot.child("produits").getChildren()) {
+
+                    if (objet.getKey().equals(key)) {
+                        Intent intent = new Intent(context, DetailsActivity.class);
+                        Bundle args = new Bundle();
+                        args.putSerializable("PRODUIT", (Serializable) objet.getValue(Produit.class));
+                        args.putSerializable("IMAGE", (Serializable) image);
+                        intent.putExtra("BUNDLE", args);
+                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                        context.startActivity(intent);
+                    }
+
+                }
+        }
+
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Log.d("TAG", error.getMessage());
+            }
+        });
+    }
+    private void getPHome(final String key, final Upload image) {
+        mDatabaseRef.addListenerForSingleValueEvent(new ValueEventListener() {
+
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+
+
+                for(DataSnapshot objet:snapshot.getChildren()){
+
+                    for(DataSnapshot snap:objet.child("produits").getChildren()){
+                        if(snap.getKey().equals(key)){
+                            Intent intent=new Intent(context,DetailsActivity.class);
+                            Bundle args = new Bundle();
+                            args.putSerializable("PRODUIT",(Serializable)snap.getValue(Produit.class));
+                            args.putSerializable("IMAGE",(Serializable)image);
+                            intent.putExtra("BUNDLE",args);
+                            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                            context.startActivity(intent);
+                        }
+
+                    }
+                }
+
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Log.d("TAG", error.getMessage());
+            }
+        });
+    }
+
+
 
     private void addProductToPanier (final Context context,Produit produit) {
         SharedPreferences preferences = context.getSharedPreferences("SHARED_PREF", MODE_PRIVATE);

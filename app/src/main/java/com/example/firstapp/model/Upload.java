@@ -1,6 +1,8 @@
 package com.example.firstapp.model;
 
-public class Upload {
+import java.io.Serializable;
+
+public class Upload implements Serializable {
     public String imgUrl;
     public String key;
 

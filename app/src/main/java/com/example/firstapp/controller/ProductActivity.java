@@ -168,9 +168,10 @@ public class ProductActivity extends AppCompatActivity {
 
 
 
-                Adapter ADP=new Adapter(getApplicationContext(),uploads);
+                Adapter ADP=new Adapter(getApplicationContext(),uploads,"produit");
                 recyclerView.setAdapter(ADP);
                 recyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
+
                 if(uploads.size()==0){
                     tv_prd.setText("Aucun produit à votre disposition");
                 }

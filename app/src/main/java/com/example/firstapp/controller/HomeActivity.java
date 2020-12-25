@@ -80,9 +80,13 @@ public class HomeActivity extends AppCompatActivity {
                         imgLists.add(upload);
                     }
                 }
-                Adapter ADP=new Adapter(getApplicationContext(),imgLists);
+                Adapter ADP=new Adapter(getApplicationContext(),imgLists,"home");
                 recyclerView.setAdapter(ADP);
                 recyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
+
+                if(imgLists.size()==0){
+                    //tv_prd.setText("Aucun produit à votre disposition");
+                }
             }
 
             @Override
