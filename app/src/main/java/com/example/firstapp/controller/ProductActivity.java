@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -22,13 +23,18 @@ import com.example.firstapp.model.Produit;
 import com.example.firstapp.model.Upload;
 import com.example.firstapp.model.User;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -59,6 +65,8 @@ public class ProductActivity extends AppCompatActivity {
 
             BottomNavigationView BNV = findViewById(R.id.bottom_navigation);
             BNV.setSelectedItemId(R.id.ItemProduits);
+            SharedPreferences preferences= getSharedPreferences("SHARED_PREF", MODE_PRIVATE);
+            String uid = preferences.getString("UID", "NOTHING");
 
 
 
@@ -69,26 +77,18 @@ public class ProductActivity extends AppCompatActivity {
                         case R.id.ItemProduits:
                             break;
                         case R.id.ItemPanier:
-                            Intent intent = new Intent(getApplicationContext(), PanierActivity.class);
-                            //intent.putExtra("BUNDLEUSER", sendUser(user));
-                            startActivity(intent);
+                            startActivity(new Intent(getApplicationContext(), PanierActivity.class));
                             overridePendingTransition(0, 0);
-
                             break;
                         case R.id.ItemHome:
-                            Intent intent2 = new Intent(getApplicationContext(), HomeActivity.class);
-                            //intent2.putExtra("BUNDLEUSER", sendUser(user));
-                            startActivity(intent2);
+                            startActivity(new Intent(getApplicationContext(), HomeActivity.class));
                             overridePendingTransition(0, 0);
                             break;
-                        default:
-                            return false;
                     }
                     return true;
                 }
             });
-        SharedPreferences preferences= getSharedPreferences("SHARED_PREF", MODE_PRIVATE);
-        String uid = preferences.getString("UID", "NOTHING");
+
 
             getImages(uid);
 
@@ -113,8 +113,8 @@ public class ProductActivity extends AppCompatActivity {
         public boolean onCreateOptionsMenu (Menu menu){
 
             getMenuInflater().inflate(R.menu.menu, menu);
-            menu.getItem(1).setEnabled(false);
-            menu.getItem(2).setEnabled(false);
+            //menu.getItem(1).setEnabled(false);
+            //menu.getItem(2).setEnabled(false);
 
 
             return true;
@@ -122,7 +122,8 @@ public class ProductActivity extends AppCompatActivity {
 
         @Override
         public boolean onOptionsItemSelected (@NonNull MenuItem item){
-
+            SharedPreferences preferences= getSharedPreferences("SHARED_PREF", MODE_PRIVATE);
+            String uid = preferences.getString("UID", "NOTHING");
             switch (item.getItemId()) {
                 case R.id.ajout:
 
@@ -130,9 +131,13 @@ public class ProductActivity extends AppCompatActivity {
                     break;
                 case R.id.update:
                     Toast.makeText(getApplicationContext(), "update", Toast.LENGTH_LONG).show();
+
                     break;
                 case R.id.delete:
-                    Toast.makeText(getApplicationContext(), "delete", Toast.LENGTH_LONG).show();
+
+
+                    deleteProduct(uid,"-MPMWZG7ivF6-a_6khg0");
+                    
                     break;
                 case R.id.disconnect:
                     disconnect();
@@ -143,8 +148,33 @@ public class ProductActivity extends AppCompatActivity {
 
         }
 
-        private void disconnect () {
-            SharedPreferences preferences = getSharedPreferences("SHARED_PREF", MODE_PRIVATE);
+    private void deleteProduct(String uid,String key) {
+        DatabaseReference dbRef=FirebaseDatabase.getInstance().getReference();
+        StorageReference stRef=FirebaseStorage.getInstance().getReference();
+
+        DatabaseReference produit = dbRef.child("Users").child(uid).child("produits").child(key);
+        DatabaseReference produitImg = dbRef.child("images").child(uid).child(key);
+        StorageReference image = stRef.child("-MPMWZG7ivF6-a_6khg0.jpg");
+        produit.removeValue();
+        produitImg.removeValue();
+
+        image.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void aVoid) {
+                Log.d("TAG", "onSuccess");
+
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Log.d("TAG", "onFailure");
+
+            }
+        });
+    }
+
+    private void disconnect () {
+            SharedPreferences preferences= getSharedPreferences("SHARED_PREF", MODE_PRIVATE);
             SharedPreferences.Editor editor = preferences.edit();
             editor.putString("UID", null);
             editor.apply();

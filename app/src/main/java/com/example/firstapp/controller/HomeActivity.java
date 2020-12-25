@@ -85,6 +85,7 @@ public class HomeActivity extends AppCompatActivity {
                 recyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
 
                 if(imgLists.size()==0){
+
                     //tv_prd.setText("Aucun produit à votre disposition");
                 }
             }
@@ -126,17 +127,13 @@ public class HomeActivity extends AppCompatActivity {
 
                         break;
                     case R.id.ItemPanier:
-                        Intent intent=new Intent(getApplicationContext(), PanierActivity.class);
-                        startActivity(intent);
+                        startActivity(new Intent(getApplicationContext(), PanierActivity.class));
                         overridePendingTransition(0,0);
                         break;
                     case R.id.ItemProduits:
-                        Intent intent2=new Intent(getApplicationContext(), ProductActivity.class);
-                        startActivity(intent2);
+                        startActivity(new Intent(getApplicationContext(), ProductActivity.class));
                         overridePendingTransition(0,0);
                         break;
-                    default:
-                        return false;
                 }
                 return true;
             }

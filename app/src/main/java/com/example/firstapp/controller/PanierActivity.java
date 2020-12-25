@@ -37,20 +37,14 @@ public class PanierActivity extends AppCompatActivity {
                     case R.id.ItemPanier:
                         break;
                     case R.id.ItemHome:
-                        Intent intent=new Intent(getApplicationContext(), HomeActivity.class);
-                        intent.putExtra("BUNDLEUSER",sendUser(user));
-                        startActivity(intent);
+                        startActivity(new Intent(getApplicationContext(), HomeActivity.class));
                         overridePendingTransition(0,0);
                         break;
                     case R.id.ItemProduits:
-                        Intent intent2=new Intent(getApplicationContext(),ProductActivity.class);
-                        intent2.putExtra("BUNDLEUSER",sendUser(user));
-                        startActivity(intent2);
+                        startActivity(new Intent(getApplicationContext(),ProductActivity.class));
                         overridePendingTransition(0,0);
 
                         break;
-                    default:
-                        return false;
                 }
                 return true;
             }
