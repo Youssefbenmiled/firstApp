@@ -41,7 +41,6 @@ public class Adapter extends RecyclerView.Adapter<Adapter.MyViewHolder> {
 
     Context context;
     ArrayList<Upload> images;
-    String key;
     DatabaseReference mDatabaseRef;
 
     //int images[];
@@ -49,17 +48,9 @@ public class Adapter extends RecyclerView.Adapter<Adapter.MyViewHolder> {
     public Adapter(Context context, ArrayList<Upload> data){
         this.context=context;
         this.images=data;
-    }
-
-    public Adapter(Context context, ArrayList<Upload> data,String key){
-        this.context=context;
-        this.images=data;
-        this.key=key;
         mDatabaseRef = FirebaseDatabase.getInstance().getReference().child("Users");
 
     }
-
-
 
     @NonNull
     @Override
@@ -88,20 +79,22 @@ public class Adapter extends RecyclerView.Adapter<Adapter.MyViewHolder> {
                 .into(holder.iv);
 
 
-        //holder.iv.setImageBitmap(unproduit);
-        //holder.VerifyProducts(context);
-        //holder.categorie.setText(unproduit.getCategorie());
-        //holder.nom.setText(unproduit.getNomProduit());
-        //holder.fournisseur.setText(unproduit.getFournisseur());
-        //holder.nbpanier.setText(String.valueOf(unproduit.getNbPanier()));
+        /*
+        holder.iv.setImageBitmap(unproduit);
+        holder.VerifyProducts(context);
+        holder.categorie.setText(unproduit.getCategorie());
+        holder.nom.setText(unproduit.getNomProduit());
+        holder.fournisseur.setText(unproduit.getFournisseur());
+        holder.nbpanier.setText(String.valueOf(unproduit.getNbPanier()));
 
-        /*holder.btnLike.setOnClickListener(new View.OnClickListener() {
+        holder.btnLike.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 //addProductToPanier(context,unproduit);
 
             }
-        });*/
+        });
+        */
 
 
         holder.itemView.setOnClickListener(new View.OnClickListener() {
@@ -109,22 +102,13 @@ public class Adapter extends RecyclerView.Adapter<Adapter.MyViewHolder> {
             @Override
             public void onClick(View v) {
 
-                /*Intent intent=new Intent(context,DetailsActivity.class);
-                Bundle args = new Bundle();
-                args.putSerializable("PRODUIT",(Serializable)getProduit());
-                intent.putExtra("BUNDLE",args);
-                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                context.startActivity(intent);*/
-                getProduit();
-
-
-
+                getProduit(image.getKey());
 
             }
         });
     }
 
-    private void getProduit() {
+    private void getProduit(final String key) {
         mDatabaseRef.addListenerForSingleValueEvent(new ValueEventListener() {
 
             @Override
@@ -135,16 +119,16 @@ public class Adapter extends RecyclerView.Adapter<Adapter.MyViewHolder> {
 
                     for(DataSnapshot snap:objet.child("produits").getChildren()){
                         if(snap.getKey().equals(key)){
-                            Log.d("id",snap.getValue().toString());
+                            //Log.d("last",snap.getValue()+" lasttt");
+                            Intent intent=new Intent(context,DetailsActivity.class);
+                            Bundle args = new Bundle();
+                            args.putSerializable("PRODUIT",(Serializable)snap.getValue(Produit.class));
+                            intent.putExtra("BUNDLE",args);
+                            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                            context.startActivity(intent);
                         }
 
-
-
                     }
-
-
-
-
                 }
 
 
@@ -155,7 +139,6 @@ public class Adapter extends RecyclerView.Adapter<Adapter.MyViewHolder> {
                 Log.d("TAG", error.getMessage());
             }
         });
-
     }
 
     @Override

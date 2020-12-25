@@ -141,7 +141,7 @@ public class CameraActivity extends AppCompatActivity {
                         @Override
                         public void onSuccess(Uri uri) {
 
-                            Upload upload=new Upload(uri.toString());
+                            Upload upload=new Upload(uri.toString(),key);
 
                             mDatabaseRef.child(uid).child(key).setValue(upload);
                             Toast.makeText(getApplicationContext(), "Produit ajouté!", Toast.LENGTH_LONG).show();

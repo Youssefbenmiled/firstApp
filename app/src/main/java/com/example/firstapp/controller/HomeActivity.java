@@ -68,26 +68,19 @@ public class HomeActivity extends AppCompatActivity {
     }
 
     private void getImages() {
-        final String[] key = new String[1];
+
         mDatabaseRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
 
                 for(DataSnapshot snap:snapshot.getChildren()){
                     for(DataSnapshot snapIN:snap.getChildren()){
-                        key[0] =snapIN.getKey();
-                        Upload upload=snap.child(key[0]).getValue(Upload.class);
+
+                        Upload upload=snap.child(snapIN.getKey()).getValue(Upload.class);
                         imgLists.add(upload);
-
-
                     }
-
-
-
                 }
-
-
-                Adapter ADP=new Adapter(getApplicationContext(),imgLists,key[0]);
+                Adapter ADP=new Adapter(getApplicationContext(),imgLists);
                 recyclerView.setAdapter(ADP);
                 recyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
             }
