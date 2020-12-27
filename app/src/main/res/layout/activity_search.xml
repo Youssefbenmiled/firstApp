@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".controller.ProfilActivity">
+    tools:context=".controller.SearchActivity">
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:layout_width="match_parent"
@@ -16,5 +16,6 @@
         app:menu="@menu/menu_navigation"
         android:layout_alignParentBottom="true"
         />
+
 
 </RelativeLayout>

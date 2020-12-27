@@ -47,7 +47,7 @@ public class HomeActivity extends AppCompatActivity {
 
 
      private RecyclerView recyclerView;
-     //private ImageView iv;
+
     //int images[]={R.drawable.ic_home,R.drawable.cplus}; /
      private DatabaseReference mDatabaseRef;
 
@@ -103,11 +103,9 @@ public class HomeActivity extends AppCompatActivity {
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event)  {
         if (keyCode == KeyEvent.KEYCODE_BACK && event.getRepeatCount() == 0) {
-
             finishAffinity();
             return true;
         }
-
         return super.onKeyDown(keyCode, event);
     }
 
@@ -132,6 +130,14 @@ public class HomeActivity extends AppCompatActivity {
                         break;
                     case R.id.ItemProduits:
                         startActivity(new Intent(getApplicationContext(), ProductActivity.class));
+                        overridePendingTransition(0,0);
+                        break;
+                    case R.id.ItemProfil:
+                        startActivity(new Intent(getApplicationContext(), ProfilActivity.class));
+                        overridePendingTransition(0,0);
+                        break;
+                    case R.id.ItemSearch:
+                        startActivity(new Intent(getApplicationContext(), SearchActivity.class));
                         overridePendingTransition(0,0);
                         break;
                 }

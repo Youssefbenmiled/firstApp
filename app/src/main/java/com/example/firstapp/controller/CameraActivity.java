@@ -169,12 +169,6 @@ public class CameraActivity extends AppCompatActivity {
             });
 
         }
-        else
-        {
-            Toast.makeText(getApplicationContext(),"No file selected !",Toast.LENGTH_LONG).show();
-        }
-
-
     }
 
     private void openGallery() {

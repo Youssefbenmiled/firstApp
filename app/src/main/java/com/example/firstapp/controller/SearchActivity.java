@@ -10,8 +10,7 @@ import android.view.MenuItem;
 import com.example.firstapp.R;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
-public class ProfilActivity extends AppCompatActivity {
-
+public class SearchActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
@@ -35,21 +34,23 @@ public class ProfilActivity extends AppCompatActivity {
                         overridePendingTransition(0,0);
                         break;
                     case R.id.ItemProfil:
-
+                        startActivity(new Intent(getApplicationContext(), ProfilActivity.class));
+                        overridePendingTransition(0,0);
                         break;
                     case R.id.ItemSearch:
-                        startActivity(new Intent(getApplicationContext(), SearchActivity.class));
-                        overridePendingTransition(0,0);
+
                         break;
                 }
                 return true;
             }
         });
+
     }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_profil);
+        setContentView(R.layout.activity_search);
+
     }
 }

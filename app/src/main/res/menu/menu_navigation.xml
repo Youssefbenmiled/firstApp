@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
 
     <item
@@ -11,11 +12,20 @@
         android:id="@+id/ItemProduits"
         android:title="Produits"
         android:icon="@drawable/ic_product"
-        
         />
     <item
         android:id="@+id/ItemPanier"
         android:title="Panier"
         android:icon="@drawable/ic_panier"
+        />
+    <item
+        android:id="@+id/ItemProfil"
+        android:title="Profil"
+        android:icon="@drawable/ic_baseline_person_24"
+        />
+    <item
+        android:id="@+id/ItemSearch"
+        android:title="Rechercher"
+        android:icon="@drawable/ic_baseline_person_search_24"
         />
 </menu>

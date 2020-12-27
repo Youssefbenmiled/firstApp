@@ -38,6 +38,8 @@ import com.google.firebase.storage.StorageReference;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 public class ProductActivity extends AppCompatActivity {
 
@@ -122,22 +124,19 @@ public class ProductActivity extends AppCompatActivity {
 
         @Override
         public boolean onOptionsItemSelected (@NonNull MenuItem item){
+            DatabaseReference dbRef=FirebaseDatabase.getInstance().getReference();
+            StorageReference stRef=FirebaseStorage.getInstance().getReference();
             SharedPreferences preferences= getSharedPreferences("SHARED_PREF", MODE_PRIVATE);
             String uid = preferences.getString("UID", "NOTHING");
             switch (item.getItemId()) {
                 case R.id.ajout:
-
                     startActivity(new Intent(getApplicationContext(),AddProductActivity.class));
                     break;
                 case R.id.update:
-                    Toast.makeText(getApplicationContext(), "update", Toast.LENGTH_LONG).show();
-
+                    updateProduct(uid,"-MPMV6WhAwhQuUSgmdf0",dbRef);
                     break;
                 case R.id.delete:
-
-
-                    deleteProduct(uid,"-MPMWZG7ivF6-a_6khg0");
-                    
+                    deleteProduct(uid,"-MPMWZG7ivF6-a_6khg0",stRef,dbRef);
                     break;
                 case R.id.disconnect:
                     disconnect();
@@ -148,10 +147,32 @@ public class ProductActivity extends AppCompatActivity {
 
         }
 
-    private void deleteProduct(String uid,String key) {
-        DatabaseReference dbRef=FirebaseDatabase.getInstance().getReference();
-        StorageReference stRef=FirebaseStorage.getInstance().getReference();
 
+    private void updateProduct(String uid,String key,DatabaseReference dbRef) {
+        Map<String,Object>map=new HashMap<>();
+
+        Produit produit=new Produit("adresse33",false,"01/01/2021");
+
+        //map.put("produit",new Produit("adresse2",false,"01/01/2021"));
+
+        dbRef.child("Users").child(uid).child("produits").child(key).setValue(produit)
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        Log.d("TAG","UPDATE SUCCESS");
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Log.d("TAG","UPDATE FAILED");
+            }
+        });
+
+
+    }
+
+
+    private void deleteProduct(String uid,String key,StorageReference stRef,DatabaseReference dbRef) {
         DatabaseReference produit = dbRef.child("Users").child(uid).child("produits").child(key);
         DatabaseReference produitImg = dbRef.child("images").child(uid).child(key);
         StorageReference image = stRef.child("-MPMWZG7ivF6-a_6khg0.jpg");
@@ -161,14 +182,10 @@ public class ProductActivity extends AppCompatActivity {
         image.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void aVoid) {
-                Log.d("TAG", "onSuccess");
-
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
-                Log.d("TAG", "onFailure");
-
             }
         });
     }
