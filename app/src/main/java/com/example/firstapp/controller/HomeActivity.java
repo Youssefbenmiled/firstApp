@@ -121,9 +121,6 @@ public class HomeActivity extends AppCompatActivity {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
                 switch (menuItem.getItemId()){
-                    case R.id.ItemHome:
-
-                        break;
                     case R.id.ItemPanier:
                         startActivity(new Intent(getApplicationContext(), PanierActivity.class));
                         overridePendingTransition(0,0);

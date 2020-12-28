@@ -37,9 +37,7 @@ public class SearchActivity extends AppCompatActivity {
                         startActivity(new Intent(getApplicationContext(), ProfilActivity.class));
                         overridePendingTransition(0,0);
                         break;
-                    case R.id.ItemSearch:
 
-                        break;
                 }
                 return true;
             }

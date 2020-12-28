@@ -42,7 +42,39 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class ProductActivity extends AppCompatActivity {
+    @Override
+    protected void onStart() {
+        super.onStart();
+        BottomNavigationView BNV=findViewById(R.id.bottom_navigation);
+        BNV.setSelectedItemId(R.id.ItemProduits);
 
+        BNV.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
+                switch (menuItem.getItemId()){
+                    case R.id.ItemHome:
+                        startActivity(new Intent(getApplicationContext(), HomeActivity.class));
+                        overridePendingTransition(0,0);
+                        break;
+                    case R.id.ItemPanier:
+                        startActivity(new Intent(getApplicationContext(), PanierActivity.class));
+                        overridePendingTransition(0,0);
+                        break;
+
+                    case R.id.ItemProfil:
+                        startActivity(new Intent(getApplicationContext(), ProfilActivity.class));
+                        overridePendingTransition(0,0);
+                        break;
+                    case R.id.ItemSearch:
+                        startActivity(new Intent(getApplicationContext(), SearchActivity.class));
+                        overridePendingTransition(0,0);
+                        break;
+                }
+                return true;
+            }
+        });
+
+    }
     private RecyclerView recyclerView;
     private Toolbar toolbar;
     private ArrayList<Upload> uploads=new ArrayList<>();
@@ -65,33 +97,9 @@ public class ProductActivity extends AppCompatActivity {
             getSupportActionBar().setDisplayShowTitleEnabled(false);
 
 
-            BottomNavigationView BNV = findViewById(R.id.bottom_navigation);
-            BNV.setSelectedItemId(R.id.ItemProduits);
+
             SharedPreferences preferences= getSharedPreferences("SHARED_PREF", MODE_PRIVATE);
             String uid = preferences.getString("UID", "NOTHING");
-
-
-
-            BNV.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
-                @Override
-                public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
-                    switch (menuItem.getItemId()) {
-                        case R.id.ItemProduits:
-                            break;
-                        case R.id.ItemPanier:
-                            startActivity(new Intent(getApplicationContext(), PanierActivity.class));
-                            overridePendingTransition(0, 0);
-                            break;
-                        case R.id.ItemHome:
-                            startActivity(new Intent(getApplicationContext(), HomeActivity.class));
-                            overridePendingTransition(0, 0);
-                            break;
-                    }
-                    return true;
-                }
-            });
-
-
             getImages(uid);
 
 
@@ -149,7 +157,7 @@ public class ProductActivity extends AppCompatActivity {
 
 
     private void updateProduct(String uid,String key,DatabaseReference dbRef) {
-        Map<String,Object>map=new HashMap<>();
+        //Map<String,Object>map=new HashMap<>();
 
         Produit produit=new Produit("adresse33",false,"01/01/2021");
 
@@ -194,10 +202,12 @@ public class ProductActivity extends AppCompatActivity {
             SharedPreferences preferences= getSharedPreferences("SHARED_PREF", MODE_PRIVATE);
             SharedPreferences.Editor editor = preferences.edit();
             editor.putString("UID", null);
+            editor.putString("USER", null);
+            editor.putBoolean("USER_CONNECTED", false);
             editor.apply();
             startActivity(new Intent(getApplicationContext(), LoginActivity.class));
             FirebaseAuth.getInstance().signOut();
-            finish();
+            finishAffinity();
         }
 
 

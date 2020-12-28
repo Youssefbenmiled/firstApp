@@ -50,8 +50,8 @@ public class User {
         return tel;
     }
 
-    public void setTel(String tel) {
-        tel = tel;
+    public void setTel(String telephone) {
+        this.tel = telephone;
     }
 
     public ArrayList<Produit> getProdList() {
@@ -101,4 +101,14 @@ public class User {
 
 */
 
+    @Override
+    public String toString() {
+        return "User{" +
+                "tel='" + tel + '\'' +
+                ", email='" + email + '\'' +
+                ", username='" + username + '\'' +
+                ", ProdList=" + ProdList +
+                ", PanierList=" + PanierList +
+                '}';
+    }
 }

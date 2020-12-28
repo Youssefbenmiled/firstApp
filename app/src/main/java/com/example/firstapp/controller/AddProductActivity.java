@@ -13,6 +13,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.DatePicker;
@@ -25,6 +26,7 @@ import com.example.firstapp.R;
 import com.example.firstapp.model.Produit;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.database.FirebaseDatabase;
 
 import java.io.Serializable;
@@ -35,6 +37,42 @@ import java.util.Date;
 import java.util.Locale;
 
 public class AddProductActivity extends AppCompatActivity {
+    @Override
+    protected void onStart() {
+        super.onStart();
+        BottomNavigationView BNV=findViewById(R.id.bottom_navigation);
+        BNV.setSelectedItemId(R.id.ItemProduits);
+
+        BNV.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
+                switch (menuItem.getItemId()){
+                    case R.id.ItemHome:
+                        startActivity(new Intent(getApplicationContext(), HomeActivity.class));
+                        overridePendingTransition(0,0);
+                        break;
+                    case R.id.ItemPanier:
+                        startActivity(new Intent(getApplicationContext(), PanierActivity.class));
+                        overridePendingTransition(0,0);
+                        break;
+                    case R.id.ItemProfil:
+                        startActivity(new Intent(getApplicationContext(), ProfilActivity.class));
+                        overridePendingTransition(0,0);
+                        break;
+                    case R.id.ItemSearch:
+                        startActivity(new Intent(getApplicationContext(), SearchActivity.class));
+                        overridePendingTransition(0,0);
+                        break;
+                    case R.id.ItemProduits:
+                        startActivity(new Intent(getApplicationContext(), ProductActivity.class));
+                        overridePendingTransition(0,0);
+                        break;
+                }
+                return true;
+            }
+        });
+    }
+
     private EditText txt_date,txt_adresse;
     private TextView tv_date;
     private Button btn_continue;
@@ -43,6 +81,7 @@ public class AddProductActivity extends AppCompatActivity {
 
     private Boolean disp;
     private Produit produit=new Produit();
+
 
 
     @Override

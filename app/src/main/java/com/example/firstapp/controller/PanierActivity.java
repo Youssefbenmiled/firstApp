@@ -16,8 +16,40 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 import java.io.Serializable;
 
 public class PanierActivity extends AppCompatActivity {
-    User user;
-    RecyclerView rv_favorits;
+    private User user;
+    private RecyclerView rv_favorits;
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        BottomNavigationView BNV=findViewById(R.id.bottom_navigation);
+        BNV.setSelectedItemId(R.id.ItemPanier);
+
+        BNV.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
+                switch (menuItem.getItemId()){
+                    case R.id.ItemHome:
+                        startActivity(new Intent(getApplicationContext(), HomeActivity.class));
+                        overridePendingTransition(0,0);
+                        break;
+                    case R.id.ItemPanier:
+                        startActivity(new Intent(getApplicationContext(), PanierActivity.class));
+                        overridePendingTransition(0,0);
+                        break;
+                    case R.id.ItemProfil:
+                        startActivity(new Intent(getApplicationContext(), ProfilActivity.class));
+                        overridePendingTransition(0,0);
+                        break;
+                    case R.id.ItemSearch:
+                        startActivity(new Intent(getApplicationContext(), SearchActivity.class));
+                        overridePendingTransition(0,0);
+                        break;
+                }
+                return true;
+            }
+        });
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,30 +57,11 @@ public class PanierActivity extends AppCompatActivity {
         setContentView(R.layout.activity_panier);
 
 
-        BottomNavigationView BNV=findViewById(R.id.bottom_navigation);
-        BNV.setSelectedItemId(R.id.ItemPanier);
+
 
         user=getUser();
 
-        BNV.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
-            @Override
-            public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
-                switch (menuItem.getItemId()){
-                    case R.id.ItemPanier:
-                        break;
-                    case R.id.ItemHome:
-                        startActivity(new Intent(getApplicationContext(), HomeActivity.class));
-                        overridePendingTransition(0,0);
-                        break;
-                    case R.id.ItemProduits:
-                        startActivity(new Intent(getApplicationContext(),ProductActivity.class));
-                        overridePendingTransition(0,0);
 
-                        break;
-                }
-                return true;
-            }
-        });
 
 
 

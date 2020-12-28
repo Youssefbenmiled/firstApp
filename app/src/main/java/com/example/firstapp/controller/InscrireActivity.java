@@ -6,6 +6,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.util.Patterns;
 import android.view.View;
@@ -24,6 +26,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.gson.Gson;
 
 import java.util.ArrayList;
 
@@ -31,8 +34,10 @@ public class InscrireActivity extends AppCompatActivity {
 
     private EditText var_username,var_pass1,var_pass2,var_phone,var_email;
     private Button btnConfirm;
-    private ArrayList<User>Users=new ArrayList<>();
+
     private FirebaseAuth mAuth;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -46,15 +51,36 @@ public class InscrireActivity extends AppCompatActivity {
         var_email=findViewById(R.id.etEmail);
         btnConfirm=findViewById(R.id.btnConfirm);
         mAuth = FirebaseAuth.getInstance();
-        //btnConfirm.setEnabled(true);
+
+
+        var_username.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                trouve(s.toString());
+
+            }
+        });
 
 
 
         btnConfirm.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if(var_username.getError()==null){
 
-                registerUser();
+                    registerVerifyUser();
+
+                }
             }
         });
 
@@ -64,7 +90,7 @@ public class InscrireActivity extends AppCompatActivity {
 
 
 
-    private void registerUser() {
+    private void registerVerifyUser() {
         final String username=var_username.getText().toString().trim();
         final String em=var_email.getText().toString().trim();
         String pass1=var_pass1.getText().toString().trim();
@@ -82,14 +108,13 @@ public class InscrireActivity extends AppCompatActivity {
             var_username.requestFocus();
             return;
         }
-        if(trouve(username)){
-            var_username.setError("Nom utilisateur existe deja");
-            var_username.requestFocus();
+        if(em.isEmpty()){
+            var_email.setError("Adresse email vide");
+            var_email.requestFocus();
             return;
         }
-
-        if(em.isEmpty()|| Patterns.EMAIL_ADDRESS.matcher(em).matches()==false){
-            var_email.setError("wrong email");
+        if(Patterns.EMAIL_ADDRESS.matcher(em).matches()==false){
+            var_email.setError("Mauvaise adresse mail");
             var_email.requestFocus();
             return;
         }
@@ -138,15 +163,25 @@ public class InscrireActivity extends AppCompatActivity {
                                 @Override
                                 public void onComplete(@NonNull Task<Void> task) {
                                     if(task.isSuccessful()){
-
                                         SharedPreferences preferences = getSharedPreferences("SHARED_PREF", MODE_PRIVATE);
                                         SharedPreferences.Editor editor = preferences.edit();
                                         editor.putString("UID", ch);
-                                        editor.apply();
+                                        Gson gson=new Gson();
 
+                                        String json = gson.toJson(user);
+                                        editor.putString("USER", json);
+
+                                        editor.putBoolean("USER_CONNECTED", true);
+
+                                        editor.apply();
                                         Toast.makeText(getApplicationContext(),"User registred succefully",Toast.LENGTH_LONG).show();
                                         startActivity(new Intent(getApplicationContext(), HomeActivity.class));
+
                                         finish();
+
+
+
+
 
 
                                     }
@@ -171,32 +206,24 @@ public class InscrireActivity extends AppCompatActivity {
 
     }
 
-    private boolean trouve(final String username) {
-        final Boolean[] exist = {false};
-        FirebaseDatabase.getInstance().getReference("Users").addListenerForSingleValueEvent(new ValueEventListener() {
+    private void trouve(final String username) {
 
+        FirebaseDatabase.getInstance().getReference("Users").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-
-
                 for(DataSnapshot objet:snapshot.getChildren()){
                     String user=objet.child("username").getValue(String.class);
                     if(user.equals(username)){
-
-                        exist[0] =true;
-
+                        var_username.setError("Nom utilisateur existe deja");
+                        var_username.requestFocus();
                     }
                 }
             }
-
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-                Log.d("TAG", error.getMessage());
+                Log.d("error", error.getMessage());
             }
         });
-        return exist[0];
-
-
     }
 
 

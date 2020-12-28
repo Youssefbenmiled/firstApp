@@ -8,6 +8,7 @@ import androidx.core.content.ContextCompat;
 
 import android.content.ContentResolver;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.WindowManager;
 import android.webkit.MimeTypeMap;
 import android.widget.Toast;
@@ -34,6 +35,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
@@ -51,6 +53,42 @@ import java.util.Date;
 import java.util.Locale;
 
 public class CameraActivity extends AppCompatActivity {
+    @Override
+    protected void onStart() {
+        super.onStart();
+        BottomNavigationView BNV=findViewById(R.id.bottom_navigation);
+        BNV.setSelectedItemId(R.id.ItemProduits);
+
+        BNV.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
+                switch (menuItem.getItemId()){
+                    case R.id.ItemHome:
+                        startActivity(new Intent(getApplicationContext(), HomeActivity.class));
+                        overridePendingTransition(0,0);
+                        break;
+                    case R.id.ItemPanier:
+                        startActivity(new Intent(getApplicationContext(), PanierActivity.class));
+                        overridePendingTransition(0,0);
+                        break;
+                    case R.id.ItemProfil:
+                        startActivity(new Intent(getApplicationContext(), ProfilActivity.class));
+                        overridePendingTransition(0,0);
+                        break;
+                    case R.id.ItemSearch:
+                        startActivity(new Intent(getApplicationContext(), SearchActivity.class));
+                        overridePendingTransition(0,0);
+                        break;
+                    case R.id.ItemProduits:
+                        startActivity(new Intent(getApplicationContext(), ProductActivity.class));
+                        overridePendingTransition(0,0);
+                        break;
+                }
+                return true;
+            }
+        });
+    }
+
     private ImageView iv_cam;
     private Button btn_camera;
     private StorageReference mStorageRef;
@@ -62,6 +100,7 @@ public class CameraActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_camera);
+
         iv_cam=(ImageView) findViewById(R.id.img_cam);
         btn_camera=(Button)findViewById(R.id.btn_cam);
 

@@ -26,6 +26,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.gson.Gson;
 
 import java.util.Iterator;
 
@@ -143,22 +144,12 @@ public class LoginActivity extends AppCompatActivity {
 
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-
-
                 for(DataSnapshot objet:snapshot.getChildren()){
 
-                    //User user=objet.getValue(User.class);
-                    String em=objet.child("email").getValue(String.class);
-                    if(em.equals(email)){
+                    User user=objet.getValue(User.class);
 
-                        SharedPreferences preferences = getSharedPreferences("SHARED_PREF", MODE_PRIVATE);
-                        SharedPreferences.Editor editor = preferences.edit();
-                        editor.putString("UID", objet.getKey());
-                        editor.apply();
-                        Intent i=new Intent(getApplicationContext(),HomeActivity.class);
-                        startActivity(i);
-                        return;
-
+                    if(user.getEmail().equals(email)){
+                        saveAndRedirect(objet,user);
                     }
 
                 }
@@ -172,6 +163,26 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
 
+    }
+
+    private void saveAndRedirect(DataSnapshot objet,User user) {
+        SharedPreferences preferences = getSharedPreferences("SHARED_PREF", MODE_PRIVATE);
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putString("UID", objet.getKey());
+        Gson gson=new Gson();
+
+        String json = gson.toJson(user);
+        editor.putString("USER", json);
+
+        editor.putBoolean("USER_CONNECTED", true);
+
+        editor.apply();
+        finish();
+
+
+        Intent i=new Intent(getApplicationContext(),HomeActivity.class);
+        startActivity(i);
+        return;
     }
 
     @Override
