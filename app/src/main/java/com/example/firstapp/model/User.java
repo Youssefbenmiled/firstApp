@@ -4,7 +4,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import com.example.firstapp.model.Produit;
 
-public class User {
+public class User implements Serializable {
     private String tel,email,username;
     private ArrayList<Produit> ProdList=new ArrayList<>();
     private ArrayList<Produit> PanierList=new ArrayList<>();

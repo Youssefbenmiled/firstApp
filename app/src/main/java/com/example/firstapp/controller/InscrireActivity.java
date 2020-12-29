@@ -66,6 +66,11 @@ public class InscrireActivity extends AppCompatActivity {
 
             @Override
             public void afterTextChanged(Editable s) {
+                if(Patterns.EMAIL_ADDRESS.matcher(s.toString()).matches()){
+                    var_username.setError("Nom utilisateur invalide");
+                    var_username.requestFocus();
+                    return;
+                }
                 trouve(s.toString());
 
             }
@@ -108,6 +113,7 @@ public class InscrireActivity extends AppCompatActivity {
             var_username.requestFocus();
             return;
         }
+
         if(em.isEmpty()){
             var_email.setError("Adresse email vide");
             var_email.requestFocus();

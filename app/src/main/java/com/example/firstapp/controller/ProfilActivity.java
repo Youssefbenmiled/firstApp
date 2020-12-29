@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.firstapp.R;
 import com.example.firstapp.model.User;
@@ -20,8 +21,21 @@ public class ProfilActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
+
+        Intent intent = getIntent();
         BottomNavigationView BNV=findViewById(R.id.bottom_navigation);
-        BNV.setSelectedItemId(R.id.ItemProfil);
+        if(intent.getBundleExtra("BUNDLE")!=null)
+        {
+
+            BNV.setSelectedItemId(R.id.ItemSearch);
+
+        }
+        else{
+            BNV.setSelectedItemId(R.id.ItemProfil);
+
+        }
+
+
 
         BNV.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
@@ -44,12 +58,17 @@ public class ProfilActivity extends AppCompatActivity {
                         startActivity(new Intent(getApplicationContext(), SearchActivity.class));
                         overridePendingTransition(0,0);
                         break;
+                    case R.id.ItemProfil:
+                        startActivity(new Intent(getApplicationContext(), ProfilActivity.class));
+                        overridePendingTransition(0,0);
+                        break;
                 }
                 return true;
             }
         });
     }
     private TextView tv_email,tv_username,tv_phone;
+    private User user;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,17 +76,29 @@ public class ProfilActivity extends AppCompatActivity {
         setContentView(R.layout.activity_profil);
 
         SharedPreferences preferences = getSharedPreferences("SHARED_PREF", MODE_PRIVATE);
-
-        Gson gson = new Gson();
-        String json = preferences.getString("USER", null);
-
-        User user =  gson.fromJson(json, User.class);
-        //Log.d("test",user.getUsername()+"..");
         tv_email=findViewById(R.id.tv_adresse);
         tv_username=findViewById(R.id.tv_username);
         tv_phone=findViewById(R.id.tv_tel);
 
+        Intent intent = getIntent();
+
+        if(intent.getBundleExtra("BUNDLE")!=null) {
+            Bundle args = intent.getBundleExtra("BUNDLE");
+            user = (User) args.getSerializable("USER");
+
+        }
+        else
+        {
+            Gson gson = new Gson();
+            String json = preferences.getString("USER", null);
+            user =  gson.fromJson(json, User.class);
+        }
         loadData(user);
+
+
+
+
+
 
 
 
